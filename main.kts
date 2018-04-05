@@ -2,16 +2,115 @@
 
 println("UW Homework: Simple Kotlin")
 
+
 // write a "whenFn" that takes an arg of type "Any" and returns a String
+fun whenFn(arg: Any): String{
+    when(arg){
+        "Hello" -> return "world"
+        0 -> return "zero"
+        1 -> return "one"
+        in 2..10 -> return "low number"
+        is Int -> return "a number"
+        is String -> return "Say what?"
+        else -> {
+            return "I don't understand"
+        }
+    }
+}
 
 // write an "add" function that takes two Ints, returns an Int, and adds the values
+fun add(x: Int, y: Int): Int{
+    return x + y
+}
+
 // write a "sub" function that takes two Ints, returns an Int, and subtracts the values
+fun sub(left: Int, right: Int): Int{
+    return left-right
+}
+
 // write a "mathOp" function that takes two Ints and a function (that takes two Ints and returns an Int), returns an Int, and applies the passed-in-function to the arguments
+fun mathOp(x: Int, y: Int, innerFun: (Int, Int)->Int): Int {
+    return innerFun(x,y)
+}
 
 // write a class "Person" with first name, last name and age
+class Person(var firstName: String, var lastName: String, var age: Int) {
+    public val debugString: String 
+        get() = "[Person firstName:$firstName lastName:$lastName age:$age]"
+    
 
+    fun equals(other: Person): Boolean{
+        return (firstName == other.firstName && lastName == other.lastName && age == other.age)
+    }
+    override fun hashCode(): Int{
+        var result: Int = 17
+        result = 31 * result + firstName.hashCode()
+        result = 31 * result + age 
+        result = 31 * result + lastName.hashCode()
+        return result
+    }
+}
 // write a class "Money"
-
+ 
+class Money(var amount: Int, var currency: String){
+    operator fun plus(other: Money): Money{
+        if(other.currency != currency){
+            val newOther = other.convert(currency)
+            return Money(amount + newOther.amount, currency)
+        } else {
+            return Money(amount+other.amount, currency)
+        }
+    }
+    public fun convert(newCurrency: String): Money{
+        var newAmount: Int = amount
+        if(currency == "USD"){
+            when(newCurrency){
+                "GBP" -> newAmount = amount/2
+                "CAN" -> newAmount = amount*5/4
+                "EUR" -> newAmount = amount*3/2
+                "USD" -> newAmount = amount
+                else -> {
+                    throw IllegalArgumentException("Illegal currency")
+                }
+            }
+        } else if(currency == "GBP"){
+            val newInUS = amount * 2
+            when(newCurrency){
+                "USD" -> newAmount = newInUS
+                "CAN" -> newAmount = newInUS*5/4
+                "EUR" -> newAmount = newInUS*3/2
+                "GBP" -> newAmount = amount
+                else -> {
+                    throw IllegalArgumentException("Illegal currency")
+                }
+            }
+        } else if(currency == "EUR"){
+            val newInUS = amount * (2/3)
+            when(newCurrency){
+                "USD" -> newAmount = newInUS
+                "CAN" -> newAmount = newInUS*5/4
+                "GBP" -> newAmount = newInUS/2
+                "EUR" -> newAmount = amount
+                else -> {
+                    throw IllegalArgumentException("Illegal currency")
+                }
+            }
+        } else if(currency == "CAN"){
+            val newInUS = amount * (4/5)
+            when(newCurrency){
+                "USD" -> newAmount = newInUS
+                "EUR" -> newAmount = newInUS*3/2
+                "GBP" -> newAmount = newInUS/2
+                "CAN" -> newAmount = amount
+                else -> {
+                    throw IllegalArgumentException("Illegal currency")
+                }
+            }
+        }
+        var newMoney = Money(newAmount, newCurrency) 
+        return newMoney
+    }
+}
 // ============ DO NOT EDIT BELOW THIS LINE =============
 
 print("When tests: ")
